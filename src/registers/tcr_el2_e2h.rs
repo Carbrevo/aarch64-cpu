@@ -115,8 +115,78 @@ register_bitfields! {u64,
             KiB_16 = 0b10
         ],
 
+        /// Shareability attribute for memory associated with translation table walks using
+        /// TTBR0_EL2.
+        ///
+        /// 00 Non-shareable
+        /// 01 Reserved
+        /// 10 Outer Shareable
+        /// 11 Inner Shareable
+        ///
+        /// Other values are reserved.
+        SH1 OFFSET(28) NUMBITS(2) [
+            None = 0b00,
+            Outer = 0b10,
+            Inner = 0b11
+        ],
+
+        /// Outer cacheability attribute for memory associated with translation table walks using
+        /// TTBR0_EL2.
+        ///
+        /// 00 Normal memory, Outer Non-cacheable
+        ///
+        /// 01 Normal memory, Outer Write-Back Read-Allocate Write-Allocate Cacheable
+        ///
+        /// 10 Normal memory, Outer Write-Through Read-Allocate No Write-Allocate Cacheable
+        ///
+        /// 11 Normal memory, Outer Write-Back Read-Allocate No Write-Allocate Cacheable
+        ORGN1 OFFSET(26) NUMBITS(2) [
+            NonCacheable = 0b00,
+            WriteBack_ReadAlloc_WriteAlloc_Cacheable = 0b01,
+            WriteThrough_ReadAlloc_NoWriteAlloc_Cacheable = 0b10,
+            WriteBack_ReadAlloc_NoWriteAlloc_Cacheable = 0b11
+        ],
+
+        /// Inner cacheability attribute for memory associated with translation table walks using
+        /// TTBR0_EL2.
+        ///
+        /// 00 Normal memory, Inner Non-cacheable
+        ///
+        /// 01 Normal memory, Inner Write-Back Read-Allocate Write-Allocate Cacheable
+        ///
+        /// 10 Normal memory, Inner Write-Through Read-Allocate No Write-Allocate Cacheable
+        ///
+        /// 11 Normal memory, Inner Write-Back Read-Allocate No Write-Allocate Cacheable
+        IRGN1 OFFSET(24) NUMBITS(2) [
+            NonCacheable = 0b00,
+            WriteBack_ReadAlloc_WriteAlloc_Cacheable = 0b01,
+            WriteThrough_ReadAlloc_NoWriteAlloc_Cacheable = 0b10,
+            WriteBack_ReadAlloc_NoWriteAlloc_Cacheable = 0b11
+        ],
+
+        /// The size offset of the memory region addressed by TTBR0_EL2. The region size is
+        /// 2^(64-T0SZ) bytes.
+        ///
+        /// The maximum and minimum possible values for T0SZ depend on the level of translation
+        /// table and the memory translation granule size, as described in the AArch64 Virtual
+        /// Memory System Architecture chapter.
         T1SZ OFFSET(16) NUMBITS(6) [],
 
+        /// Granule size for the TTBR0_EL2.
+        ///
+        /// 0b00 4KiB
+        /// 0b01 64KiB
+        /// 0b10 16KiB
+        ///
+        /// Other values are reserved.
+        ///
+        /// If the value is programmed to either a reserved value, or a size that has not been
+        /// implemented, then the hardware will treat the field as if it has been programmed to an
+        /// IMPLEMENTATION DEFINED choice of the sizes that has been implemented for all purposes
+        /// other than the value read back from this register.
+        ///
+        /// It is IMPLEMENTATION DEFINED whether the value read back is the value programmed or the
+        /// value that corresponds to the size chosen.
         TG0 OFFSET(14) NUMBITS(2) [
             KiB_4 = 0b00,
             KiB_64 = 0b01,
@@ -171,7 +241,6 @@ register_bitfields! {u64,
             WriteThrough_ReadAlloc_NoWriteAlloc_Cacheable = 0b10,
             WriteBack_ReadAlloc_NoWriteAlloc_Cacheable = 0b11
         ],
-
 
         /// The size offset of the memory region addressed by TTBR0_EL2. The region size is
         /// 2^(64-T0SZ) bytes.
